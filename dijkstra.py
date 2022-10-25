@@ -24,15 +24,13 @@ def dijkstra(radice, nodi,archi):
   print ("Nodi:",nodi,"\nArchi:",archi,"\nRadice:",radice,"\nRaggiunti:",raggiunti)
   while nodi:      # Si arresta quando l'insieme "nodi" e' vuoto 
       print("=========== Inizio iterazione ============")
+      print("Nodi=",nodi)
 # PREPARAZIONE
 # Trovo nodo con distanza minima tra quelli raggiunti
-      nodo_min = None
-      for nodo in nodi:
-        if nodo in raggiunti:
-          if nodo_min is None: nodo_min = nodo
-          elif raggiunti[nodo][1] < raggiunti[nodo_min][1]: nodo_min = nodo
-      if nodo_min is None: break
-      print("Nodi=",nodi,". Elimino "+nodo_min)
+      nonRaggiunti = {k: v for k, v in raggiunti.items() if k in nodi}
+      print("Distanze non raggiunti: ", nonRaggiunti)
+      nodo_min = min(nonRaggiunti.keys(), key=lambda d: nonRaggiunti[d][1])
+      print("Elimino "+nodo_min)
       nodi.remove(nodo_min)
       distanza_min = raggiunti[nodo_min][1]
 # Calcolo mappa archi uscenti da min -> distanza da min
@@ -40,7 +38,7 @@ def dijkstra(radice, nodi,archi):
       for arco in archi.keys():
         if arco[0] == nodo_min: distanze_da_min[arco[1]]=archi[arco]
         if arco[1] == nodo_min: distanze_da_min[arco[0]]=archi[arco]
-      print("Distanze da " + nodo_min + ":", distanze_da_min)
+      print("Link uscenti da " + nodo_min + ":", distanze_da_min)
 #      print(raggiunti)
 #ALGORITMO di Dijkstra
       for destinazione in distanze_da_min.keys():
@@ -50,7 +48,8 @@ def dijkstra(radice, nodi,archi):
         if destinazione not in raggiunti or nuova_distanza < raggiunti[destinazione][1]:
           if raggiunti[nodo_min][0] == "": raggiunti[destinazione] = (destinazione, nuova_distanza)
           else: raggiunti[destinazione] = (raggiunti[nodo_min][0], nuova_distanza)
-      print("Raggiunti = ",raggiunti)
+      print("Raggiunti: ",raggiunti)
+  print("=========== Algoritmo terminato ===========")
   return raggiunti
 
 # 4 nodi: provare a disegnare la rete
@@ -66,7 +65,7 @@ def dijkstra(radice, nodi,archi):
 # Questo grafo e' tratto dalla pagina di wikipedia, arricchito con
 # un ulteriore nodo '7' raggiungibile solo da nodi non adiacenti alla 
 # radice
-l = dijkstra(
+rt = dijkstra(
 '1',
 set(['1','2','3','4', '5', '6', '7']),
 {('1','2'):7,
@@ -81,4 +80,4 @@ set(['1','2','3','4', '5', '6', '7']),
  ('4','7'):6,
  ('5','7'):2
 })
-print(l)
+print("\nTabella di routing:",rt)
