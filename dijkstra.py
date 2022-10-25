@@ -20,12 +20,12 @@
 # mentre il terzo è funzionale solo all'esecuzione dell'algoritmo
 
 def dijkstra(radice, nodi,archi):
-  raggiunti = {radice: ("",0,"")} # è un dizionario, il valore è una t-upla di 3 elementi
+  raggiunti = {radice: ("",0)} # è un dizionario, il valore è una t-upla di 3 elementi
   print ("Nodi:",nodi,"\nArchi:",archi,"\nRadice:",radice,"\nRaggiunti:",raggiunti)
   while nodi:      # Si arresta quando l'insieme "nodi" e' vuoto 
+      print("=========== Inizio iterazione ============")
 # PREPARAZIONE
 # Trovo nodo con distanza minima tra quelli raggiunti
-      print("=========== Inizio iterazione ============")
       nodo_min = None
       for nodo in nodi:
         if nodo in raggiunti:
@@ -48,10 +48,7 @@ def dijkstra(radice, nodi,archi):
         nuova_distanza = distanza_min + distanze_da_min[destinazione]
 # Se migliore della precedente sostituisco distanza e prossimo
         if destinazione not in raggiunti or nuova_distanza < raggiunti[destinazione][1]:
-          if raggiunti[nodo_min][2] == "":
-            raggiunti[destinazione] = (nodo_min, nuova_distanza, destinazione)
-          else:
-            raggiunti[destinazione] = (nodo_min, nuova_distanza, raggiunti[nodo_min][2])
+          raggiunti[destinazione] = (nodo_min, nuova_distanza)
       print("Raggiunti = ",raggiunti)
   return raggiunti
 
