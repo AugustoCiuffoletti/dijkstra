@@ -6,51 +6,48 @@
 #   Questi due dati sono stati precedentemente derivati dai link state ricevuti dai vicini 
 #   tramite il flooding.
 # L'algoritmo svuota progressivamente l'insieme dei "nodi" aggiungendo
-# quelli che rimuove al dizionario "raggiunti" e calcolandone la
+# quelli che rimuove al dizionario "routingTable" e calcolandone la
 # distanza.
-# Il dizionario "raggiunti" e' la tabella di routing,
-# e associa a ciascuna destinazione una t-upla (primo hop, distanza),
-# e viene aggiornato con il risultato dell'algoritmo.
-# Il primo elemento della tupla, l'ultimo hop, e' funzionale  all'algoritmo, ma non e'
-# rilevante ai fini del routing.
-#
-# In conclusione, un elemento nel dizionario "raggiunti" si legge come:
-# destinazione = (primo hop, metrica, ultimo hop)
-# I primi tre dati sono quelli che vanno a far parte della tabella di routing,
-# mentre il terzo è funzionale solo all'esecuzione dell'algoritmo
+# Il dizionario "routingTable" e' la tabella di routing,
+# e associa a ciascuna destinazione una 2-upla (primo hop, distanza),
+# e viene via via aggiornato dall'algoritmo.
 
 def dijkstra(radice, nodi,archi):
-  raggiunti = {radice: ("",0)} # è un dizionario, il valore è una t-upla di 2 elementi
-  print ("Nodi:",nodi,"\nArchi:",archi,"\nRadice:",radice,"\nRaggiunti:",raggiunti)
+  # Inizializzo la oruting table con la radice e le metriche dei nodi adiacenti
+  routingTable = {radice: ("",0)} 
+  routingTable.update({n2: (n2,m) for (n1,n2),m in archi.items() if n1 == radice})
+  routingTable.update({n1: (n1, m) for (n1,n2),m in archi.items() if n2 == radice}) 
+  print ("Nodi:",nodi,"\nArchi:",archi,"\nRadice:",radice,"\nroutingTable:",routingTable)
   while nodi:      # Si arresta quando l'insieme "nodi" e' vuoto 
       print("=========== Inizio iterazione ============")
       print("Nodi=",nodi)
 # PREPARAZIONE
-# Trovo nodo con distanza minima tra quelli raggiunti
-      nonRaggiunti = {k: v for k, v in raggiunti.items() if k in nodi}
+# Trovo nodo con distanza minima tra quelli nella tabella di routing
+      nonRaggiunti = {k: v for k, v in routingTable.items() if k in nodi}
       print("Distanze non raggiunti: ", nonRaggiunti)
       nodo_min = min(nonRaggiunti.keys(), key=lambda d: nonRaggiunti[d][1])
       print("Elimino "+nodo_min)
       nodi.remove(nodo_min)
-      distanza_min = raggiunti[nodo_min][1]
+      distanza_min = routingTable[nodo_min][1]
 # Calcolo mappa archi uscenti da min -> distanza da min
-      distanze_da_min={}
-      for ((src,dest),metrica) in archi.items():
-        if src == nodo_min: distanze_da_min[dest]=metrica
-        if dest == nodo_min: distanze_da_min[src]=metrica
+#      distanze_da_min={}
+      distanze_da_min = {dest: m for (src,dest),m in archi.items() if src == nodo_min}
+      distanze_da_min.update({src: m for (src,dest),m in archi.items() if dest == nodo_min}) 
+#      for ((src,dest),metrica) in archi.items():
+#        if src == nodo_min: distanze_da_min[dest]=metrica
+#        if dest == nodo_min: distanze_da_min[src]=metrica
       print("Link uscenti da " + nodo_min + ":", distanze_da_min)
-#      print(raggiunti)
+#      print(routingTable)
 #ALGORITMO di Dijkstra
       for destinazione in distanze_da_min.keys():
 # Calcolo la distanza della destinazione passando da nodo_min
         nuova_distanza = distanza_min + distanze_da_min[destinazione]
 # Se migliore della precedente sostituisco distanza e prossimo
-        if destinazione not in raggiunti or nuova_distanza < raggiunti[destinazione][1]:
-          if raggiunti[nodo_min][0] == "": raggiunti[destinazione] = (destinazione, nuova_distanza)
-          else: raggiunti[destinazione] = (raggiunti[nodo_min][0], nuova_distanza)
-      print("Raggiunti: ",raggiunti)
+        if destinazione not in routingTable or nuova_distanza < routingTable[destinazione][1]:
+          routingTable[destinazione] = (routingTable[nodo_min][0], nuova_distanza)
+      print("Tabella di routing: ",routingTable)
   print("=========== Algoritmo terminato ===========")
-  return raggiunti
+  return routingTable
 
 # 4 nodi: provare a disegnare la rete
 #l = dijkstra(
