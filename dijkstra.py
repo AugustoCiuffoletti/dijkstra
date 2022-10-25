@@ -9,7 +9,7 @@
 # quelli che rimuove al dizionario "raggiunti" e calcolandone la
 # distanza.
 # Il dizionario "raggiunti" e' la tabella di routing,
-# e associa a ciascuna destinazione una t-upla (ultimo hop, distanza, primo hop),
+# e associa a ciascuna destinazione una t-upla (primo hop, distanza),
 # e viene aggiornato con il risultato dell'algoritmo.
 # Il primo elemento della tupla, l'ultimo hop, e' funzionale  all'algoritmo, ma non e'
 # rilevante ai fini del routing.
@@ -20,7 +20,7 @@
 # mentre il terzo è funzionale solo all'esecuzione dell'algoritmo
 
 def dijkstra(radice, nodi,archi):
-  raggiunti = {radice: ("",0)} # è un dizionario, il valore è una t-upla di 3 elementi
+  raggiunti = {radice: ("",0)} # è un dizionario, il valore è una t-upla di 2 elementi
   print ("Nodi:",nodi,"\nArchi:",archi,"\nRadice:",radice,"\nRaggiunti:",raggiunti)
   while nodi:      # Si arresta quando l'insieme "nodi" e' vuoto 
       print("=========== Inizio iterazione ============")
@@ -48,7 +48,8 @@ def dijkstra(radice, nodi,archi):
         nuova_distanza = distanza_min + distanze_da_min[destinazione]
 # Se migliore della precedente sostituisco distanza e prossimo
         if destinazione not in raggiunti or nuova_distanza < raggiunti[destinazione][1]:
-          raggiunti[destinazione] = (nodo_min, nuova_distanza)
+          if raggiunti[nodo_min][0] == "": raggiunti[destinazione] = (destinazione, nuova_distanza)
+          else: raggiunti[destinazione] = (raggiunti[nodo_min][0], nuova_distanza)
       print("Raggiunti = ",raggiunti)
   return raggiunti
 
