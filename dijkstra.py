@@ -35,9 +35,9 @@ def dijkstra(radice, nodi,archi):
       distanza_min = raggiunti[nodo_min][1]
 # Calcolo mappa archi uscenti da min -> distanza da min
       distanze_da_min={}
-      for arco in archi.keys():
-        if arco[0] == nodo_min: distanze_da_min[arco[1]]=archi[arco]
-        if arco[1] == nodo_min: distanze_da_min[arco[0]]=archi[arco]
+      for ((src,dest),metrica) in archi.items():
+        if src == nodo_min: distanze_da_min[dest]=metrica
+        if dest == nodo_min: distanze_da_min[src]=metrica
       print("Link uscenti da " + nodo_min + ":", distanze_da_min)
 #      print(raggiunti)
 #ALGORITMO di Dijkstra
