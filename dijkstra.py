@@ -12,7 +12,7 @@
 # e associa a ciascuna destinazione una 2-upla (primo hop, distanza),
 # e viene via via aggiornato dall'algoritmo.
 
-def dijkstra(radice, nodi,archi):
+def dijkstra(radice, nodi, archi):
   # Inizializzo la oruting table con la radice e le metriche dei nodi adiacenti
   routingTable = {radice: ("",0)} 
   routingTable.update({n2: (n2,m) for (n1,n2),m in archi.items() if n1 == radice})
@@ -21,28 +21,16 @@ def dijkstra(radice, nodi,archi):
   while nodi:      # Si arresta quando l'insieme "nodi" e' vuoto 
       print("=========== Inizio iterazione ============")
       print("Nodi=",nodi)
-# PREPARAZIONE
-# Trovo nodo con distanza minima tra quelli nella tabella di routing
       nonRaggiunti = {k: v for k, v in routingTable.items() if k in nodi}
       print("Distanze non raggiunti: ", nonRaggiunti)
       nodo_min = min(nonRaggiunti.keys(), key=lambda d: nonRaggiunti[d][1])
       print("Elimino "+nodo_min)
       nodi.remove(nodo_min)
-      distanza_min = routingTable[nodo_min][1]
-# Calcolo mappa archi uscenti da min -> distanza da min
-#      distanze_da_min={}
       distanze_da_min = {dest: m for (src,dest),m in archi.items() if src == nodo_min}
       distanze_da_min.update({src: m for (src,dest),m in archi.items() if dest == nodo_min}) 
-#      for ((src,dest),metrica) in archi.items():
-#        if src == nodo_min: distanze_da_min[dest]=metrica
-#        if dest == nodo_min: distanze_da_min[src]=metrica
       print("Link uscenti da " + nodo_min + ":", distanze_da_min)
-#      print(routingTable)
-#ALGORITMO di Dijkstra
       for destinazione in distanze_da_min.keys():
-# Calcolo la distanza della destinazione passando da nodo_min
-        nuova_distanza = distanza_min + distanze_da_min[destinazione]
-# Se migliore della precedente sostituisco distanza e prossimo
+        nuova_distanza = routingTable[nodo_min][1] + distanze_da_min[destinazione]
         if destinazione not in routingTable or nuova_distanza < routingTable[destinazione][1]:
           routingTable[destinazione] = (routingTable[nodo_min][0], nuova_distanza)
       print("Tabella di routing: ",routingTable)
