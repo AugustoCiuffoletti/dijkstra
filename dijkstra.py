@@ -13,10 +13,10 @@
 # e viene via via aggiornato dall'algoritmo.
 
 def dijkstra(radice, nodi, archi):
-  # Inizializzo la oruting table con la radice e le metriche dei nodi adiacenti
-  routingTable = {radice: ("",0)} 
+  # Inizializzo la routing table con la radice e le metriche dei nodi adiacenti
+  routingTable = {radice: ("",0)} # dest: (next hop, metrica)
   routingTable.update({n2: (n2,m) for (n1,n2),m in archi.items() if n1 == radice})
-  routingTable.update({n1: (n1, m) for (n1,n2),m in archi.items() if n2 == radice}) 
+  routingTable.update({n1: (n1,m) for (n1,n2),m in archi.items() if n2 == radice}) 
   print ("Nodi:",nodi,"\nArchi:",archi,"\nRadice:",radice,"\nroutingTable:",routingTable)
   while nodi:      # Si arresta quando l'insieme "nodi" e' vuoto 
       print("=========== Inizio iterazione ============")
